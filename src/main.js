@@ -37,6 +37,9 @@ function movePawns (x, y, board){
         const nx = x + direction; 
         const ny = y + dy;
         const target = board[nx]?.[ny];
-        
+        if (target && ((isWhite(piece) && isBlack(target)) || (isBlack(piece) && isWhite(target)))) {
+            moves.push([nx, ny]);
+        }
     }
+    return moves;
 }
