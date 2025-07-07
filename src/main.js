@@ -66,4 +66,29 @@ function moveKnights (x, y, board){
     return moves;   
 }
 
+function moveBishops (x, y, board) {
+    const piece = board[x][y];
+    const moves = [];
+    const bishopsMoves = [
+        [1, 1], [1, -1], [-1, 1], [-1, -1]
+    ];
 
+    for (const [dx, dy] of bishopsMoves) {
+        const nx = x + dx;
+        const ny = y + dy;
+
+        if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+            const target = board[nx][ny];
+            if (target === '' || (isWhite(piece) && isBlack(target)) || (isBlack(piece) && isWhite(target))) {
+                moves.push([nx, ny]);
+            }
+        }
+    }
+    return moves;
+}
+
+
+
+console.log(movePawns(6, 0, board)); // Example for white pawn
+console.log(moveKnights(7, 1, board)); // Example for white knight
+console.log(moveBishops(7, 2, board)); // Example for white bishop
