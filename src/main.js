@@ -75,14 +75,20 @@ function moveBishops (x, y, board) {
     ];
 
     for (const [dx, dy] of bishopsMoves) {
-        const nx = x + dx;
-        const ny = y + dy;
-
-        if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+        let nx = x + dx;
+        let ny = y + dy;
+        while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
             const target = board[nx][ny];
-            if (target === '' || (isWhite(piece) && isBlack(target)) || (isBlack(piece) && isWhite(target))) {
+            if (target === '') {
                 moves.push([nx, ny]);
+            } else {
+                if ((isWhite(piece) && isBlack(target)) || (isBlack(piece) && isWhite(target))) {
+                    moves.push([nx, ny]);
+                }
+                break;
             }
+            nx += dx;
+            ny += dy;
         }
     }
     return moves;
@@ -142,6 +148,8 @@ function moveQueens(x, y, board) {
     }
     return moves;
 }
+
+
 
 console.log(movePawns(6, 0, board)); // Example for white pawn
 console.log(moveKnights(7, 1, board)); // Example for white knight
