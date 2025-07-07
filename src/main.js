@@ -115,7 +115,36 @@ function moveRooks(x, y, board) {
     return moves;
 }
 
+function moveQueens(x, y, board) {
+    const piece = board[x][y];
+    const moves = [];
+    const queenMoves = [
+        [1, 0], [-1, 0], [0, 1], [0, -1],
+        [1, 1], [1, -1], [-1, 1], [-1, -1]
+    ];
+
+    for (const [dx, dy] of queenMoves) {
+        let nx = x + dx;
+        let ny = y + dy;
+        while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+            const target = board[nx][ny];
+            if (target === '') {
+                moves.push([nx, ny]);
+            } else {
+                if ((isWhite(piece) && isBlack(target)) || (isBlack(piece) && isWhite(target))) {
+                    moves.push([nx, ny]);
+                }
+                break;
+            }
+            nx += dx;
+            ny += dy;
+        }
+    }
+    return moves;
+}
+
 console.log(movePawns(6, 0, board)); // Example for white pawn
 console.log(moveKnights(7, 1, board)); // Example for white knight
 console.log(moveBishops(7, 2, board)); // Example for white bishop
 console.log(moveRooks(7, 0, board)); // Example for white rook
+console.log(moveQueens(7, 3, board)); // Example for white queen
