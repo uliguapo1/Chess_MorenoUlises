@@ -43,3 +43,27 @@ function movePawns (x, y, board){
     }
     return moves;
 }
+
+function moveKnights (x, y, board){
+    const piece = board[x][y];
+    const moves = [];
+    const knightMoves = [
+        [2, 1], [2, -1], [-2, 1], [-2, -1],
+        [1, 2], [1, -2], [-1, 2], [-1, -2]
+    ];
+
+    for (const [dx, dy] of knightMoves) {
+        const nx = x + dx;
+        const ny = y + dy;
+        
+        if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+            const target = board[nx][ny];
+            if (target === '' || (isWhite(piece) && isBlack(target)) || (isBlack(piece) && isWhite(target))) {
+                moves.push([nx, ny]);
+            }
+        }
+    }
+    return moves;   
+}
+
+
