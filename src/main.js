@@ -1,12 +1,13 @@
 const board = [
-    ['r','n','b','k','q','b','n','r'],
-    ['p','p','p','p','p','p','p','p'],
-    ['','','','','','','',''],
-    ['','','','','','','',''],
-    ['','','','','','','',''],
-    ['','','','','','','',''],
-    ['P','P','P','P','P','P','P','P'],
-    ['R','N','B','K','Q','B','N','R'],
+    // 0, 1 , 2,  3,  4,  5,  6,  7
+    ['r','n','b','k','q','b','n','r'],//0
+    ['p','p','p','p','p','p','p','p'],//1
+    ['','','','','','','',''],//2
+    ['','','','','','','',''],//3
+    ['','','','','','','',''],//4
+    ['','','','','','','',''],//5
+    ['P','P','P','P','P','P','P','P'],//6
+    ['R','N','B','K','Q','B','N','R'],//7
 ];
 
 function isWhite(piece){
@@ -87,8 +88,34 @@ function moveBishops (x, y, board) {
     return moves;
 }
 
+function moveRooks(x, y, board) {
+    const piece = board[x][y];
+    const moves = [];
+    const rookMoves = [
+        [1, 0], [-1, 0], [0, 1], [0, -1]
+    ];
 
+    for (const [dx, dy] of rookMoves) {
+        let nx = x + dx;
+        let ny = y + dy;
+        while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+            const target = board[nx][ny];
+            if (target === '') {
+                moves.push([nx, ny]);
+            } else {
+                if ((isWhite(piece) && isBlack(target)) || (isBlack(piece) && isWhite(target))) {
+                    moves.push([nx, ny]);
+                }
+                break;
+            }
+            nx += dx;
+            ny += dy;
+        }
+    }
+    return moves;
+}
 
 console.log(movePawns(6, 0, board)); // Example for white pawn
 console.log(moveKnights(7, 1, board)); // Example for white knight
 console.log(moveBishops(7, 2, board)); // Example for white bishop
+console.log(moveRooks(7, 0, board)); // Example for white rook
