@@ -18,6 +18,11 @@ function isBlack(piece){
     return piece === piece.toLowerCase();
 }
 
+function toChessNotation([x, y]) {
+    const files = 'ABCDEFGH';
+    return files[y] + (8 - x);
+}
+
 function movePawns (x, y, board){
     const piece = board[x][y];
     const direction = isWhite(piece) ? -1 : 1;
@@ -42,7 +47,7 @@ function movePawns (x, y, board){
             moves.push([nx, ny]);
         }
     }
-    return moves;
+    return moves.map(toChessNotation);
 }
 
 function moveKnights (x, y, board){
@@ -64,7 +69,7 @@ function moveKnights (x, y, board){
             }
         }
     }
-    return moves;   
+    return moves.map(toChessNotation); 
 }
 
 function moveBishops (x, y, board) {
@@ -90,6 +95,9 @@ function moveBishops (x, y, board) {
             nx += dx;
             ny += dy;
         }
+        moves.forEach((move, i) => {
+        moves[i] = toChessNotation(move);
+        });
     }
     return moves;
 }
@@ -117,6 +125,9 @@ function moveRooks(x, y, board) {
             nx += dx;
             ny += dy;
         }
+        moves.forEach((move, i) => {
+        moves[i] = toChessNotation(move);
+        });
     }
     return moves;
 }
@@ -145,6 +156,9 @@ function moveQueens(x, y, board) {
             nx += dx;
             ny += dy;
         }
+        moves.forEach((move, i) => {
+        moves[i] = toChessNotation(move);
+        });
     }
     return moves;
 }
@@ -167,8 +181,11 @@ function moveKings(x, y, board) {
                 moves.push([nx, ny]);
             }
         }
+        moves.forEach((move, i) => {
+        moves[i] = toChessNotation(move);
+        });
     }
-    return moves;   
+    return moves;
 }
 
 console.log(movePawns(6, 0, board)); // Example for white pawn
