@@ -97,10 +97,65 @@ function getPieceAt(file, rank) {
     return null;
 }
 
+// Funciones de conversión para trabajar con coordenadas
+function fileToIndex(file) {
+    return file.charCodeAt(0) - 'A'.charCodeAt(0);
+}
+
+function indexToFile(index) {
+    return String.fromCharCode('A'.charCodeAt(0) + index);
+}
+
+function getValidMoves(file, rank) {
+        const piece = getPieceAt(file, rank);
+    if (!piece || !piece.piece) return [];
+
+    switch (piece.piece.toLowerCase()) {
+        case 'rook': return getRookMoves(file, rank);
+        case 'knight': return getKnightMoves(file, rank);
+        case 'bishop': return getBishopMoves(file, rank);
+        case 'queen': return getQueenMoves(file, rank);
+        case 'king': return getKingMoves(file, rank);
+        case 'pawn': return getPawnMoves(file, rank);
+        default: return [];
+    }
+}
+
+function getRookMoves(file, rank) {
+    const piece = getPieceAt(file, rank);
+    const moves = [];
+    const directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]; // Abajo, arriba, derecha, izquierda
+
+    for (const [dx, dy] of directions) {
+        let newFileIdx = fileToIndex(file) + dx;
+        let newRank = rank + dy;
+        
+        while (newFileIdx >= 0 && newFileIdx < 8 && newRank >= 1 && newRank <= 8) {
+            const newFile = indexToFile(newFileIdx);
+            const target = getPieceAt(newFile, newRank);
+            
+            if (!target.piece) {
+                moves.push({file: newFile, rank: newRank});
+            } else {
+                if (target.color !== piece.color) {
+                    moves.push({file: newFile, rank: newRank});
+                }
+                break;
+            }
+            
+            newFileIdx += dx;
+            newRank += dy;
+        }
+    }
+    return moves;
+}
+
 
 
 console.log(getPieceAt("A", 1));
-console.log(getPieceAt("D", 5));
+console.log(fileToIndex("A")); // 0
+console.log(indexToFile(0)); // "A"
+
 
 
 
