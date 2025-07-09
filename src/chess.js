@@ -89,4 +89,20 @@ function isBlack(piece) {
     return piece && piece.color === 'black';
 }
 
+function getPieceAt(file, rank) {
+    const column = chess[file];
+    if (column && column[rank]) {
+        return column[rank];
+    }
+    return null;
+}
+
+
+
+console.log(getPieceAt("A", 1));
+console.log(getPieceAt("D", 5));
+
+
+
+
 
