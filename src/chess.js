@@ -273,15 +273,31 @@ function getPawnMoves(file, rank) {
     return moves;
 }
 
+function move(fromFile, fromRank, toFile, toRank) {
+    const piece = getPieceAt(fromFile, fromRank);
+        if (!piece || !piece.piece) {
+        console.log("No piece at the starting position");
+        return false;
+    }
+    //Obtener movimientos validos
+    const validMoves = getValidMoves(fromFile, fromRank);
+    //Verificar si el movimiento es valido
+    const isValidMove = validMoves.some(move => move.file === toFile && move.rank === toRank);
+    if (!isValid) {
+        console.log("Invalid move");
+        return false;
+    }
+    // Mover la pieza
+    chess[toFile][toRank] = piece;
+    chess[fromFile][fromRank] = { piece: null, color: null };
+    return true;
+}
+
 console.log(getPieceAt("A", 1));
 console.log(fileToIndex("A")); // 0
 console.log(indexToFile(0)); // "A"
-console.log(getValidMoves("A", 2)); // Muestra los movimientos válidos para el peón en A2
-
-
-
-
-
-
-
-
+console.log(getValidMoves("A", 2)); // Muestra los movimientos validos para el peón en A2
+console.log(move("A", 2, "A", 5));
+console.log(move("A", 2, "A", 4)); // Mover el peón de A2 a A4
+console.log(getPieceAt("A", 4))
+console.log(getPieceAt("A", 2))
