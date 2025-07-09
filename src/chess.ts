@@ -1,7 +1,7 @@
 // Definir interfaces
 interface ChessPiece {
   piece: string | null;
-  color: string | null;
+  color: 'white' | 'black' | null;
 }
 
 interface ChessBoard {
@@ -136,9 +136,11 @@ function getValidMoves(file: string, rank: number): Position[] {
 
 function getRookMoves(file: string, rank: number): Position[] {
     const piece = getPieceAt(file, rank);
+    if (!piece) return [];
+    
     const moves: Position[] = [];
-    const directions: [number, number][] = [[1, 0], [-1, 0], [0, 1], [0, -1]]; // Abajo, arriba, derecha, izquierda
-
+    const directions: [number, number][] = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    
     for (const [dx, dy] of directions) {
         let newFileIdx = fileToIndex(file) + dx;
         let newRank = rank + dy;
@@ -147,7 +149,7 @@ function getRookMoves(file: string, rank: number): Position[] {
             const newFile = indexToFile(newFileIdx);
             const target = getPieceAt(newFile, newRank);
             
-            if (!target.piece) {
+            if (!target?.piece) {
                 moves.push({file: newFile, rank: newRank});
             } else {
                 if (target.color !== piece.color) {
@@ -163,10 +165,12 @@ function getRookMoves(file: string, rank: number): Position[] {
     return moves;
 }
 
-function getKnightMoves(file, rank) {
+function getKnightMoves(file: string, rank: number): Position[] {
     const piece = getPieceAt(file, rank);
-    const moves = [];
-    const knightMoves = [
+    if (!piece) return [];
+
+    const moves: Position[] = [];
+    const knightMoves: [number, number][] = [
         [2, 1], [2, -1], [-2, 1], [-2, -1],
         [1, 2], [1, -2], [-1, 2], [-1, -2]
     ];
@@ -179,7 +183,7 @@ function getKnightMoves(file, rank) {
             const newFile = indexToFile(newFileIdx);
             const target = getPieceAt(newFile, newRank);
             
-            if (!target.piece || target.color !== piece.color) {
+            if (!target?.piece || target.color !== piece.color) {
                 moves.push({file: newFile, rank: newRank});
             }
         }
@@ -187,10 +191,12 @@ function getKnightMoves(file, rank) {
     return moves;
 }
 
-function getBishopMoves(file, rank) {
+function getBishopMoves(file: string, rank: number): Position[] {
     const piece = getPieceAt(file, rank);
-    const moves = [];
-    const directions = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+    if (!piece) return [];
+
+    const moves: Position[] = [];
+    const directions: [number, number][] = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
 
     for (const [dx, dy] of directions) {
         let newFileIdx = fileToIndex(file) + dx;
@@ -199,8 +205,8 @@ function getBishopMoves(file, rank) {
         while (newFileIdx >= 0 && newFileIdx < 8 && newRank >= 1 && newRank <= 8) {
             const newFile = indexToFile(newFileIdx);
             const target = getPieceAt(newFile, newRank);
-            
-            if (!target.piece) {
+
+            if (!target?.piece) {
                 moves.push({file: newFile, rank: newRank});
             } else {
                 if (target.color !== piece.color) {
@@ -216,14 +222,16 @@ function getBishopMoves(file, rank) {
     return moves;
 }
 
-function getQueenMoves(file, rank) {
+function getQueenMoves(file: string, rank: number): Position[] {
     return [...getRookMoves(file, rank), ...getBishopMoves(file, rank)];
 }
 
-function getKingMoves(file, rank) {
+function getKingMoves(file: string, rank: number): Position[] {
     const piece = getPieceAt(file, rank);
-    const moves = [];
-    const directions = [
+    if (!piece) return [];
+
+    const moves: Position[] = [];
+    const directions: [number, number][] = [
         [1, 0], [-1, 0], [0, 1], [0, -1],
         [1, 1], [1, -1], [-1, 1], [-1, -1]
     ];
@@ -236,7 +244,7 @@ function getKingMoves(file, rank) {
             const newFile = indexToFile(newFileIdx);
             const target = getPieceAt(newFile, newRank);
             
-            if (!target.piece || target.color !== piece.color) {
+            if (!target?.piece || target.color !== piece.color) {
                 moves.push({file: newFile, rank: newRank});
             }
         }
@@ -244,24 +252,24 @@ function getKingMoves(file, rank) {
     return moves;
 }
 
-function getPawnMoves(file, rank) {
+function getPawnMoves(file: string, rank: number): Position[] {
     const piece = getPieceAt(file, rank);
-    const moves = [];
-    const direction = piece.color === 'white' ? 1 : -1;
-    const startRank = piece.color === 'white' ? 2 : 7;
+    const moves: Position[] = [];
+    const direction = piece?.color === 'white' ? 1 : -1;
+    const startRank = piece?.color === 'white' ? 2 : 7;
 
     // Movimiento hacia adelante
     const newRank = rank + direction;
     if (newRank >= 1 && newRank <= 8) {
         const target = getPieceAt(file, newRank);
-        if (!target.piece) {
+        if (!target?.piece) {
             moves.push({file: file, rank: newRank});
             
             // Primer movimiento (2 casillas)
             if (rank === startRank) {
                 const doubleRank = rank + 2 * direction;
                 const doubleTarget = getPieceAt(file, doubleRank);
-                if (!doubleTarget.piece) {
+                if (!doubleTarget?.piece) {
                     moves.push({file: file, rank: doubleRank});
                 }
             }
@@ -277,8 +285,8 @@ function getPawnMoves(file, rank) {
     for (const captureFile of captureFiles) {
         const captureRank = rank + direction;
         const target = getPieceAt(captureFile, captureRank);
-        
-        if (target && target.piece && target.color !== piece.color) {
+
+        if (target && target.piece && target.color !== piece?.color) {
             moves.push({file: captureFile, rank: captureRank});
         }
     }
@@ -304,7 +312,7 @@ function move(fromFile: string, fromRank: number, toFile: string, toRank: number
     }
     
     chess[toFile][toRank] = piece;
-    chess[fromFile][fromRank] = { piece: null, color: null };
+    chess[fromFile][fromRank] = { piece: null, color: null }; // Clear the piece at the starting position
     return true;
 }
 
