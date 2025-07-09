@@ -150,6 +150,30 @@ function getRookMoves(file, rank) {
     return moves;
 }
 
+function getKnightMoves(file, rank) {
+    const piece = getPieceAt(file, rank);
+    const moves = [];
+    const knightMoves = [
+        [2, 1], [2, -1], [-2, 1], [-2, -1],
+        [1, 2], [1, -2], [-1, 2], [-1, -2]
+    ];
+
+    for (const [dx, dy] of knightMoves) {
+        const newFileIdx = fileToIndex(file) + dx;
+        const newRank = rank + dy;
+        
+        if (newFileIdx >= 0 && newFileIdx < 8 && newRank >= 1 && newRank <= 8) {
+            const newFile = indexToFile(newFileIdx);
+            const target = getPieceAt(newFile, newRank);
+            
+            if (!target.piece || target.color !== piece.color) {
+                moves.push({file: newFile, rank: newRank});
+            }
+        }
+    }
+    return moves;
+}
+
 
 
 console.log(getPieceAt("A", 1));
