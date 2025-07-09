@@ -1,4 +1,21 @@
-const chess = {
+// Definir interfaces
+interface ChessPiece {
+  piece: string | null;
+  color: string | null;
+}
+
+interface ChessBoard {
+  [key: string]: {
+    [key: number]: ChessPiece;
+  };
+}
+
+interface Position {
+  file: string;
+  rank: number;
+}
+
+const chess: ChessBoard = {
     A: {
         1: {piece: 'rook',color: 'white',},
         2: {piece: 'pawn',color: 'white',},
@@ -81,34 +98,30 @@ const chess = {
     }
 };
 
-function isWhite(piece) {
-    return piece && piece.color === 'white';
+function isWhite(piece: ChessPiece | null): boolean {
+    return piece?.color === 'white';
 }
 
-function isBlack(piece) {
-    return piece && piece.color === 'black';
+function isBlack(piece: ChessPiece | null): boolean {
+    return piece?.color === 'black';
 }
 
-function getPieceAt(file, rank) {
+function getPieceAt(file: string, rank: number): ChessPiece | null {
     const column = chess[file];
-    if (column && column[rank]) {
-        return column[rank];
-    }
-    return null;
+    return column?.[rank] ?? null;
 }
 
-// Funciones de conversion para trabajar con coordenadas
-function fileToIndex(file) {
+function fileToIndex(file: string): number {
     return file.charCodeAt(0) - 'A'.charCodeAt(0);
 }
 
-function indexToFile(index) {
+function indexToFile(index: number): string {
     return String.fromCharCode('A'.charCodeAt(0) + index);
 }
 
-function getValidMoves(file, rank) {
-        const piece = getPieceAt(file, rank);
-    if (!piece || !piece.piece) return [];
+function getValidMoves(file: string, rank: number): Position[] {
+    const piece = getPieceAt(file, rank);
+    if (!piece?.piece) return [];
 
     switch (piece.piece.toLowerCase()) {
         case 'rook': return getRookMoves(file, rank);
@@ -121,10 +134,10 @@ function getValidMoves(file, rank) {
     }
 }
 
-function getRookMoves(file, rank) {
+function getRookMoves(file: string, rank: number): Position[] {
     const piece = getPieceAt(file, rank);
-    const moves = [];
-    const directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]; // Abajo, arriba, derecha, izquierda
+    const moves: Position[] = [];
+    const directions: [number, number][] = [[1, 0], [-1, 0], [0, 1], [0, -1]]; // Abajo, arriba, derecha, izquierda
 
     for (const [dx, dy] of directions) {
         let newFileIdx = fileToIndex(file) + dx;
@@ -273,21 +286,23 @@ function getPawnMoves(file, rank) {
     return moves;
 }
 
-function move(fromFile, fromRank, toFile, toRank) {
+function move(fromFile: string, fromRank: number, toFile: string, toRank: number): boolean {
     const piece = getPieceAt(fromFile, fromRank);
-        if (!piece || !piece.piece) {
+    if (!piece?.piece) {
         console.log("No piece at the starting position");
         return false;
     }
-    //Obtener movimientos validos
+    
     const validMoves = getValidMoves(fromFile, fromRank);
-    //Verificar si el movimiento es valido
-    const isValidMove = validMoves.some(move => move.file === toFile && move.rank === toRank);
-    if (!isValid) {
+    const isValidMove = validMoves.some(move => 
+        move.file === toFile && move.rank === toRank
+    );
+    
+    if (!isValidMove) {
         console.log("Invalid move");
         return false;
     }
-    // Mover la pieza
+    
     chess[toFile][toRank] = piece;
     chess[fromFile][fromRank] = { piece: null, color: null };
     return true;
