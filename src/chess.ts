@@ -316,11 +316,12 @@ function move(fromFile: string, fromRank: number, toFile: string, toRank: number
     return true;
 }
 
-function getPieceAndMoves(cell: string): {
+function getPieceAndMoves(expectedPiece: string, cell: string): {
   piece: string | null;
   color: 'white' | 'black' | null;
   moves: [string, number][];
   hasCapture: boolean;
+  validPiece: boolean;
 } {
   const file = cell.charAt(0).toUpperCase();
   const rank = parseInt(cell.slice(1)); // soporta A10
@@ -328,7 +329,7 @@ function getPieceAndMoves(cell: string): {
   const pieceData = getPieceAt(file, rank);
 
   if (!pieceData?.piece) {
-    return { piece: null, color: null, moves: [], hasCapture: false };
+    return { piece: null, color: null, moves: [], hasCapture: false, validPiece: false };
   }
 
   const validMoves = getValidMoves(file, rank);
@@ -339,11 +340,17 @@ function getPieceAndMoves(cell: string): {
     const target = getPieceAt(move.file, move.rank);
     if (target?.piece && target.color !== pieceData.color) {
       hasCapture = true;
+      formattedMoves.push([move.file, move.rank]);
     }
-    formattedMoves.push([move.file, move.rank]);
   }
 
-  return { piece: pieceData.piece, color: pieceData.color, moves: formattedMoves, hasCapture };
+  return {
+    piece: pieceData.piece, 
+    color: pieceData.color, 
+    moves: formattedMoves, 
+    hasCapture,
+    validPiece: true
+    };
 }
 
 // console.log(getPieceAt("A", 1));// Muestra la pieza en la celda deseada
@@ -357,5 +364,6 @@ function getPieceAndMoves(cell: string): {
 console.log(move("A", 2, "A", 4)); 
 console.log(move("A", 7, "A", 5));
 console.log(move("B", 7, "B", 5));  
-console.log(getPieceAndMoves("A4")); // Muestra la pieza en B5 y sus movimientos válidos
-
+console.log(getPieceAndMoves("pawn", "A4")); // Muestra la pieza y sus movimientos válidos
+console.log(getPieceAndMoves("pawn", "A5")); 
+console.log(getPieceAndMoves("pawn", "B5")); 
