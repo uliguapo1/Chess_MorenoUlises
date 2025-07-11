@@ -316,11 +316,46 @@ function move(fromFile: string, fromRank: number, toFile: string, toRank: number
     return true;
 }
 
-console.log(getPieceAt("A", 1));
-console.log(fileToIndex("A")); // 0
-console.log(indexToFile(0)); // "A"
-console.log(getValidMoves("A", 2)); // Muestra los movimientos validos para el peón en A2
-console.log(move("A", 2, "A", 5));
-console.log(move("A", 2, "A", 4)); // Mover el peón de A2 a A4
-console.log(getPieceAt("A", 4))
-console.log(getPieceAt("A", 2))
+function getPieceAndMoves(cell: string): {
+  piece: string | null;
+  color: 'white' | 'black' | null;
+  moves: [string, number][];
+  hasCapture: boolean;
+} {
+  const file = cell.charAt(0).toUpperCase();
+  const rank = parseInt(cell.slice(1)); // soporta A10
+
+  const pieceData = getPieceAt(file, rank);
+
+  if (!pieceData?.piece) {
+    return { piece: null, color: null, moves: [], hasCapture: false };
+  }
+
+  const validMoves = getValidMoves(file, rank);
+  const formattedMoves: [string, number][] = [];
+  let hasCapture = false;
+
+  for (const move of validMoves) {
+    const target = getPieceAt(move.file, move.rank);
+    if (target?.piece && target.color !== pieceData.color) {
+      hasCapture = true;
+    }
+    formattedMoves.push([move.file, move.rank]);
+  }
+
+  return { piece: pieceData.piece, color: pieceData.color, moves: formattedMoves, hasCapture };
+}
+
+// console.log(getPieceAt("A", 1));// Muestra la pieza en la celda deseada
+// console.log(getValidMoves("A", 2)); // Muestra los movimientos validos para el peón en A2
+// console.log(move("A", 2, "A", 5));// Mover el peón de A2 a A5 (movimiento inválido)
+// console.log(move("A", 2, "A", 4)); // Mover el peón de A2 a A4
+// console.log(getPieceAt("A", 4))// Muestra la pieza en la celda A4 después del movimiento
+// console.log(getPieceAt("A", 2))// Valida que la celda A2 esté vacía después del movimiento
+//console.log(getPieceAndMoves("A2")); // Muestra la pieza y sus movimientos válidos
+
+console.log(move("A", 2, "A", 4)); 
+console.log(move("A", 7, "A", 5));
+console.log(move("B", 7, "B", 5));  
+console.log(getPieceAndMoves("A4")); // Muestra la pieza en B5 y sus movimientos válidos
+
